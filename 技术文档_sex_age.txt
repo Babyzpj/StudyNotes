@@ -1,0 +1,98 @@
+一、 概述
+    该文档共分为四部分：
+	    1.1 概述  
+		    该部分对整篇文档做了一个概述
+			
+			实验环境：
+			    服务器：http://192.168.200.60:8888 
+			    开发环境：Anaconda+jupyter Notebook+python27
+				第三包：pandas+numpy+sklearn	 
+		1.2 基于用户行为特征进行性别预测	 
+		1.3 基于用户行为特征进行年龄预测
+		1.4 评价与建议
+		    该部分记录了一些未来得及验证的思路与想法	 							 
+				
+
+二、基于用户行为特征进行性别预测文档
+	    该部分记录了对性别建模思路、建模方法，以及评估结果
+		2.0 数据集
+			  105列特征+1列标签(sex)
+		2.1 建模思路                  			
+			  基于非数值型建模，特征主要包括几个
+			  standard_app_id  device_brand_id	device_eqp_id	package_name  app_name	province_id	city_id	 network_name	  
+		2.2 建模方法
+			逻辑斯回归(LR)
+			支持向量机(SVM)
+			梯度提升决策树(GBDT)
+			随机森林(RF)  	
+		2.3 评估结果:RF效果最好（以下为某一测试结果，多次评测结果相差不大。）
+				精准率：0.8955	
+				Recall_male:0.9027	
+				Recall_female:0.8138	
+				F1-score:0.8991	
+				准确率：0.8706
+		2.4 使用方法
+		    1、将预测数据上传至/home/tagmining/ZPJ/Eguan_Project/Predict_data/下，文件名为predict_data_1.csv
+			   数据格式：105列特征  <注：各特征顺序不能变>
+			   
+		    2、从浏览器端进去：http://192.168.200.60:8888/tree/ZPJ/Eguan_Project/Eguan_code_sex
+			   打开文件Eguan_sex_predict.ipynb，并执行。
+			
+			3、生产的数据是基于device_id(可以将该列替换成imei号)
+			   在文件夹/home/tagmining/ZPJ/Eguan_Project/Predict_result/result_sex/路径下查找生成结果
+			   文件名为result_sex.xlsx，该文件格式即为：imei  sex
+			      
+				
+三、基于用户行为特征进行年龄预测文档
+		该部分记录了对年龄建模思路、建模方法，以及评估结果
+		3.0 数据集
+			105列特征+1列标签(age)		
+		3.1 建模思路                  			
+			基于非数值型建模，特征主要包括几个
+			standard_app_id	 device_brand_id	 device_eqp_id	package_name	app_name	province_id	city_id	 network_name
+		3.2 建模方法
+			随机森林(RF) 	
+		3.3 评估结果
+			精准率：0.6200
+			召回率：0.619884
+			F1值：0.619630097557	
+		3.4 使用方法
+		    1、将预测数据上传至/home/tagmining/ZPJ/Eguan_Project/Predict_data/sex_data下，文件名为predict_data_1.csv
+			   数据格式：105列特征  <注：各特征顺序不能变>
+		    2、从浏览器端进去：http://192.168.200.60:8888/tree/ZPJ/Eguan_Project/Eguan_code_age
+			   打开文件Eguan_sex_predict.ipynb，并执行。
+			3、生产的数据是基于device_id(可以将该列替换成imei号)
+			   在文件夹/home/tagmining/ZPJ/Eguan_Project/Predict_result/result_age/路径下查找
+			   文件名为result_age.xlsx，该文件格式即为：imei  age	
+	 以上文档名可以自己定义。
+		
+四、评价与未来建议
+    4.1 评价：
+	    a、该模型根据用户非数值型特征进行编码（独热编码），每个特征训练集和测试集都共用一个词典。
+		      所以，每次预测数据都需要进行跑一次模型。
+		问题：预测数据时，每个imei号都是在全网搜索的，所以预测集可能会非常的大。没办法一次对所有数据进行预测	
+		办法：基于其它部门提供的imei号，从预测集中每个imei号抽取5-7条，这样太可以保证预测集不至于大。最后投票决定最终结果
+
+	    2、数据质量差 ,可以再试试特征组合
+		   
+		3、为什么没用到数值型特征
+		   测试结果显示，加上数值型特征后效果变差
+		   	 
+		 
+	4.2 未来建议
+	    a、可深挖下部分特征，
+		    例如：用户使用各型号手机的参数等
+			等等
+		
+		b、换个大服务器 ，增加训练数据量
+		   数据量越多，结果越准确，换个大内存服务器，可以跑更多的数据。模型的泛化能力会更好
+		   
+		   
+			
+		
+		
+		
+			
+		
+		
+		

@@ -1,0 +1,98 @@
+不同稀疏矩阵的优缺点和使用经验
+sparse matrix稀疏矩阵不同的存储形式在sparse模块中对应如下:
+bsr_matrix(arg1[, shape, dtype,copy, blocksize]) Block Sparse Row matrix
+coo_matrix(arg1[, shape, dtype,copy]) A sparse matrix in COOrdinate format.
+csc_matrix(arg1[, shape, dtype,copy]) Compressed Sparse Column matrix
+csr_matrix(arg1[, shape, dtype,copy]) Compressed Sparse Row matrix
+dia_matrix(arg1[, shape, dtype,copy]) Sparse matrix with DIAgonal storage
+dok_matrix(arg1[, shape, dtype,copy]) Dictionary Of Keys based sparse matrix.
+lil_matrix(arg1[, shape, dtype,copy]) Row-based linked list sparse matrix
+
+scipy.sparse库中提供了多种表示稀疏矩阵的格式，每种格式都有不同的用处。同时稀疏矩阵可以支持
+ 加、减、乘、除和幂等算术操作
+
+1、分块压缩稀疏行格式(BSR) bsr_matrix(arg1, shape=None, dtype=None, copy=False, blocksize=None):
+  和压缩稀疏行格式(CSR)很相似，但是BSR更适合于有密集子矩阵的稀疏矩阵，分块矩阵通常出现在向量值
+  有限的离散元中，在这种情景下，比CSR和CSC算术操作更有效。
+  
+2、压缩的列稀疏矩阵(CSC) csc_matrix(arg1,shape=None, dtype=None, copy=False)  ：
+    2.1 高效的CSC +CSC, CSC * CSC算术运算；
+    2.2 高效的列切片操作。
+    2.3 但是矩阵内积操作没有CSR,BSR快；行切片操作慢（相比CSR）；
+    2.4 稀疏结构的变化代价高（相比LIL 或者 DOK）。
+   
+3、压缩稀疏行格式(CSR) csr_matrix(arg1, shape=None, dtype=None, copy=False)： 
+    3.1 高效的CSR + CSR, CSR *CSR算术运算；
+    3.2 高效的行切片操作；
+    3.3 高效的矩阵内积内积操作。
+    3.4 但是列切片操作慢（相比CSC）；稀疏结构的变化代价高（相比LIL 或者 DOK）。
+    3.5 CSR格式在存储稀疏矩阵时非零元素平均使用的字节数(Bytes per Nonzero Entry)
+ 	   最为稳定（float类型约为8.5，double类型约为12.5）。
+    3.6 CSR格式常用于读入数据后进行稀疏矩阵计算。
+	  
+4、coo_matrix(arg1,shape=None,dtype=None,copy=False)坐标格式(COO)：
+
+	4.1 坐标形式的一种稀疏矩阵。
+		采用三个数组row、col和data保存非零元素的信息。
+		这三个数组的长度相同，row保存元素的行，col保存元素的列，data保存元素的值。
+	
+	4.2 coo_matrix不支持元素的存取和增删，一旦创建之后，除了将之转换成其它格式的矩阵，
+	    几乎无法对其做任何操作和矩阵运算。
+	
+	4.3 优点：便利快捷的在不同稀疏格式间转换；允许重复录入，允许重复的元素；从CSR\CSC格式转换非常快速
+
+	4.4 缺点：不能直接进行科学计算和切片操作，
+	         COO格式常用于从文件中进行稀疏矩阵的读写，如matrix market即采用COO格式。
+	
+	常用的函数：tocsc()  Return a copy of this matrix in Compressed Sparse Column format
+	                     以压缩稀疏列格式返回此矩阵的副本
+                tocsr()  Return a copy of this matrix in Compressed Sparse Row format
+						 以压缩稀疏行格式返回此矩阵的副本
+                todense([order, out]) Return a dense matrix representation of this matrix
+				         返回该矩阵的密集矩阵表示
+	
+	注意：许多稀疏矩阵的数据都是采用这种格式保存在文件中的，例如某个CSV文件中可能有这样三列：
+		  “用户ID，商品ID，评价值”。采用numpy.loadtxt或pandas.read_csv将数据读入之后，
+	 	  可以通过coo_matrix快速将其转换成稀疏矩阵：矩阵的每行对应一位用户，每列对应一件商品，
+		  而元素值为用户对商品的评价。		  
+
+5、dia_matrix(arg1, shape=None, dtype=None, copy=False) 对角格式存储稀疏矩阵
+	5.1 对角存储格式(DIA)和ELL格式在进行稀疏矩阵-矢量乘积(sparse matrix-vector products)时效率最高，
+	    所以它们是应用迭代法(如共轭梯度法)解稀疏线性系统最快的格式；
+	5.2 DIA格式存储数据的非零元素平均使用的字节数与矩阵类型有较大关系，适合于StructuredMesh结构的
+	   稀疏矩阵（float类型约为4.05，double类型约为8.10）。
+	5.3 对于Unstructured Mesh以及Random Matrix，DIA格式使用的字节数是CSR格式的十几倍
+
+6、dok_matrix(arg1, shape=None, dtype=None, copy=False) 基于字典存储的稀疏矩阵。
+	6.1 dok_matrix从dict继承，它采用字典保存矩阵中不为0的元素：字典的键是一个保存元素(行,列)信息的
+	    元组，其对应的值为矩阵中位于(行,列)中的元素值。
+	6.2 显然字典格式的稀疏矩阵很适合单个元素的添加、删除和存取操作。通常用来逐渐添加非零元素，
+	    然后转换成其它支持快速运算的格式。
+
+7、lil_matrix(arg1, shape=None, dtype=None, copy=False)  基于行连接存储的稀疏矩阵。
+	lil_matrix使用两个列表保存非零元素。data保存每行中的非零元素，rows保存非零元素所在的列。
+	这种格式也很适合逐个添加元素，并且能快速获取行相关的数据。
+
+总结：
+   1、dok_matrix和lil_matrix适合逐渐添加元素
+   2. COO和CSR格式比起DIA和ELL来，更加灵活，易于操作；
+   3. ELL的优点是快速，而COO优点是灵活，二者结合后的HYB格式是一种不错的稀疏矩阵表示格式；
+   4. 根据Nathan Bell的工作：
+      CSR格式在存储稀疏矩阵时非零元素平均使用的字节数(Bytes per Nonzero Entry)最为稳定 （float类型约为8.5，double类型约为12.5）而DIA格式存储数据的非零元素平均使用的字节数与
+	  矩阵类型有较大关系，适合于StructuredMesh结构的稀疏矩阵（float类型约为4.05，double类型约为8.10）
+
+     对于Unstructured Mesh以及Random Matrix,DIA格式使用的字节数是CSR格式的十几倍；
+
+   5. 一些线性代数计算库：COO格式常用于从文件中进行稀疏矩阵的读写，如matrix market即采用
+      COO格式，而CSR格式常用于读入数据后进行稀疏矩阵计算。
+
+	  
+	  
+构建稀疏矩阵：
+from scipy import sparse
+test_data = sparse.coo_matrix((numpy.ones(len(train_x_i)), (train_x_i, train_x_j)), shape=shape)
+
+查看公司：
+ https://github.com/xianhu/DemoGraphy/blob/master/predict_age_mapper.py
+ 
+ 

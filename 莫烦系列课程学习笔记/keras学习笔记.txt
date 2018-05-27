@@ -1,0 +1,34 @@
+# https://morvanzhou.github.io/tutorials/machine-learning/keras/1-1-why/
+1、为什么学习keras？
+	python的第三方包
+	非常方便便捷
+	要先学习下TensorFlow或Theano教程
+	
+2、安装：
+	2.1 依赖包
+		Numpy
+		Scipy
+	2.2 安装命令
+		pip install keras  （python2）
+		pip3 install keras  (python3)
+		
+3、Backend
+	3.1 搭建
+		即底层使用什么搭建你的神经网络
+		TensorFlow or Theano
+		
+		TensorFlow只能在centos搭建
+		而Theano是各种平台上通吃的
+	
+	3.2 如何更换你的Backend?
+		法1：在文件~/.keras/keras.json该
+		
+		法2：临时修改
+			每次写脚本时，在import keras前,要临时改变
+			import os
+			os.environ['KREAS_BACKEND']='tensorflow'
+			or
+			os.environ['KREAS_BACKEND']='theano'
+4、后面基于theano来搭建神经网络
+				
+	

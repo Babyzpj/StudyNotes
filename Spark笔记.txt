@@ -1,0 +1,34 @@
+  &&&&&&&&&&&&&&&& Spark与Hadoop &&&&&&&&&&&&&&&&&&&&&&&&
+
+Spark可以解决一下两种问题：
+    1、数据量大，单机内存不够
+	2、数据量不太大，但是计算很复杂，需要大量的时间
+	
+Spark包含如下组件：
+	1、Spark Core：包含Spark的基本功能；尤其是定义RDD的API、操作以及这两者上的动作。
+	               其他Spark的建在RDD和Spark Core之上的
+	2、Spark SQL：提供通过Apache Hive的SQL变体Hive查询语言（HiveQL）与Spark进行交互的API。
+	              每个数据库表被当做一个RDD，Spark SQL查询被转换为Spark操作。
+    3、Spark Streaming：对实时数据流进行处理和控制。Spark Streaming允许程序能够像普通RDD一样
+	                处理实时数据
+                  
+	4、MLlib：一个常用机器学习算法库，算法被实现为对RDD的Spark操作。这个库包含可扩展的学习算法           ，比如分类、回归等需要对大量数据集进行迭代的操作。
+    5、GraphX：控制图、并行图操作和计算的一组算法和工具的集合。
+               GraphX扩展了RDD API，包含控制图、创建子图、访问路径上所有顶点的操作
+	
+Hadoop与Spark的关系
+    1、Hadoop有两个核心模块，分布式存储模块HDFS和分布式计算模块Mapreduce
+    2、spark本身并没有提供分布式文件系统，因此spark的分析大多基于Hadoop的分布式文件系统HDFS
+    3、Hadoop的Mapreduce与spark都可以进行数据计算，
+    4、spark的比于Mapreduce速度更快并且提供的功能更加丰富	
+
+	
+
+RDD是什么？<要理解Spark，就需得理解RDD>
+  RDD，全称为Resilient Distributed Datasets，
+  是一个容错的、并行的数据结构.
+  该数据结构可以让用户显式地将数据存储到磁盘和内存中，并能控制数据的分区。
+  同时，RDD还提供了一组丰富的操作来操作这些数据。在这些操作中，诸如map、flatMap、filter等
+  转换操作实现了monad模式，很好地契合了Scala的集合操作。除此之外，RDD还提供了诸如join、
+  groupBy、reduceByKey等更为方便的操作（注意，reduceByKey是action，而非transformation），
+  以支持常见的数据运算。	

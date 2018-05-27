@@ -1,0 +1,33 @@
+1、cat one.txt 查看文件one.txt内容
+2、nl  one.txt  查看文件one.txt内容
+3、head -2 one.txt 查看文件one.txt的前两行
+4、tail -2 one.txt 查看文件one.txt的后两行
+
+5、cp test_1.txt test_2.txt  复制文件test_1.txt内容到test2.txt
+6、mv test_1.txt test_2.txt  将文件test_1.txt改名为test2.txt
+7、vi test_3.txt 编辑文件test_3.txt 
+
+8、who 查看当前登录账户
+9、w   查看当前登录账户
+10、last 查看以前登录信息
+11、curl ifconfig.me 得到你的外部IP地址，这个命令就在你的终端输出你的外部IP地址  
+   # 需要安装 yum install curl
+
+12、tree 以树式的格式得到当前文件夹的结构
+13、pstree 显示当前运行的所有进程以及相关的子进程 。输出的是类似tree命令的树状格式
+14、
+
+15、使用linux的crontab写个定时执行脚本，假定脚本test.py在/home/ZPJ/下，步骤如下：
+    步骤1：命令 crontab -e  进入编辑状态
+	步骤2：若想要每两分钟执行一次脚本test.py
+	      */2 * * * * /home/ZPJ/python /home/ZPJ/test.py
+		 
+		  若想要每天晚上23:00执行一次test.py脚本
+		  00 23 * * * /home/ZPJ/python /home/ZPJ/test.py
+    保存退出后就可以了
+	
+	以上脚本没问题，但是非root用户没办法执行，通过更改，可以执行了：
+	  改正如下：
+	      脚本前加了sudo
+		  在脚本中添加了输出文件的绝对路径
+	 */50 * * * * sudo /root/anaconda2/bin/python /home/ZPJ/Crontab/Method_1/test.py

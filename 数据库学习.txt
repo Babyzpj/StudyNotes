@@ -1,0 +1,241 @@
+SQL学习
+牢记：
+   1、一个数据库通常包含一个或多个表。每个表由一个名字标识（例如“客户”或者“订单”）。表包含带有数据的记录（行）。
+   2、SQL 对大小写不敏感！
+
+最常用命令:
+
+登录命令：mysql -u root -p    (enter后输入密码)
+查看有那些数据库：show databases;
+使用某一数据库：use database_name;
+查看有那些表：show tables;
+查看某一个表的描述：desc table_name;  #显示表结构，字段类型，主键，是否为空等属性，但不显示外键。
+查看表Persons的具体内容：select * from Persons;
+
+查看数据库默认编码命令：SHOW VARIABLES LIKE 'character%';
+****
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+		select——查询
+		insert——插入
+		update——更新
+		delete——删除
+		from——从哪个表
+		where——查询条件
+		join——表连接
+		order by——排序
+		
+其他重要的sql语句：
+        
+		select count(*) from test    查询test表中共有多少条数据
+		
+		select count(*) from test where age=21   查询test表中age为21的数据一共有多少条，
+		
+		select count(*) from test where age>21       
+		  #查询test表中age大于21的数据一共有多少条，数据库中的int类型支持大于小于等比较。
+		
+		select count(*) from test where age>21 and  age<30      
+		   #查询test表中age大于21并且小于30的数据一共有多少条
+		
+		select * from test order by id desc 按id降序排序
+		
+		select ** from test limit 10 查询表test的**列的前十行
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+创建表：
+CREATE TABLE 表名称
+				(
+				列名称1 数据类型,
+				列名称2 数据类型,
+				列名称3 数据类型,
+				....,
+				列名称3 数据类型                      #最后一个,
+				)
+   
+    注意：数据类型（data_type）规定了列可容纳何种数据类型
+       integer(size)、int(size) 仅容纳整数。在括号内规定数字的最大位数。
+	   
+	   char(size)   容纳固定长度的字符串（可容纳字母、数字以及特殊字符），
+	                在括号中规定字符串的长度。
+					
+	   varchar(size) 容纳可变长度的字符串（可容纳字母、数字以及特殊的字符）。
+	                 在括号中规定字符串的最大长度。
+	
+	   date(yyyymmdd)  容纳日期。
+ 
+     Eg: 创建名为 "Person" 的表
+	     该表包含 5 个列，列名分别是："Id_P"、"LastName"、"FirstName"、"Address" 以及 "City"：
+			    CREATE TABLE Persons
+				  			(
+							Id_P int,
+							LastName varchar(255),
+							FirstName varchar(255),
+							Address varchar(255),
+							City varchar(255)
+							)
+     注意：1、Id_P 列的数据类型是 int，包含整数。其余 4 列的数据类型是 varchar，最大长度为 255 个字符。
+		   2、可使用 INSERT INTO 语句向空表写入数据。
+	
+	NULL是SQL中的一种特殊情况,我们只需认为NULL表示一种未知的值.
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&	   
+	   
+# 正式学习  
+2、某些数据库系统要求在每条 SQL 命令的末端使用分号，而有些则不需要
+3、可以把 SQL 分为两个部分：数据操作语言 (DML) 和 数据定义语言 (DDL)。
+    3.1 查询和更新指令构成了 SQL 的 DML 部分：
+		SELECT - 从数据库表中获取数据
+		UPDATE - 更新数据库表中的数据
+		DELETE - 从数据库表中删除数据
+		INSERT INTO - 向数据库表中插入数据
+	3.2 SQL 的数据定义语言 (DDL)  部分使我们有能力创建或删除表格。我们也可以定义索引（键），规定表之间的链接，以及施加表间的约束。
+	    SQL 中最重要的 DDL 语句:
+		CREATE DATABASE - 创建新数据库
+		ALTER DATABASE - 修改数据库
+		CREATE TABLE - 创建新表
+		ALTER TABLE - 变更（改变）数据库表
+		DROP TABLE - 删除表
+		CREATE INDEX - 创建索引（搜索键）
+		DROP INDEX - 删除索引
+4、数据库作用
+    要创建发布(数据库中数据)的网站，您需要以下要素：
+    RDBMS 数据库程序（比如 MS Access, SQL Server, MySQL）
+    服务器端脚本语言（比如 PHP 或 ASP）
+    SQL
+    HTML / CSS
+5、数据库构成
+    RDBMS指的是关系型数据库管理系统。RDBMS 中的数据存储在被称为表（tables）的数据库对象中。
+    表是相关的数据项的集合，它由列和行组成。
+6、数据库的表
+    一个数据库通常包含一个或多个表。每个表由一个名字标识（例如“客户”或者“订单”，就是表名）。
+	表包含带有数据的记录（行）
+	
+  #######################下面为sql语句实践####################
+  
+7、select语句（SELECT 语句用于从表中选取数据。结果被存储在一个结果表中（称为结果集)）
+    注意：SQL 语句对大小写不敏感。SELECT 等效于 select。
+    7.1 SQL SELECT语句 【】
+	    语法格式1：
+		    SELECT 列名称 FROM 表名称         # 如果是多列，列名间用','隔开
+		语法格式2：
+			SELECT * FROM 表名称              # 从 "Persons" 表中选取所有的列。星号（*）是选取所有列的快捷方式。
+	    Eg: SELECT LastName,FirstName FROM Persons   
+		    # 如需获取名为 "LastName" 和 "FirstName" 的列的内容（从名为 "Persons" 的数据库表）
+		
+	7.2 SQL SELECT DISTINCT语句 【关键词 DISTINCT 用于返回唯一不同的值】
+	    语法格式1：
+			SELECT DISTINCT 列名称 FROM 表名称    # 去除重复值，仅列出不同（distinct）的值。
+		Eg: SELECT DISTINCT Company FROM Orders   #从 "Company" 列中选取所有的值,Orders是表名.类似python的set()
+	
+	7.3 WHERE 子句 【如需有条件地从表中选取数据，可将 WHERE 子句添加到 SELECT 语句】
+	    参考原文：http://www.w3school.com.cn/sql/sql_where.asp
+	    语法格式1： 
+		  SELECT 列名称 FROM 表名称 WHERE 列 运算符 值  #【运算符: BETWEEN(在某个范围内)、LIKE(搜索某种模式)】
+		注意：使用单引号来环绕文本值（大部分数据库系统也接受双引号）。如果是数值，请不要使用引号。
+		
+		Eg:   SELECT * FROM Persons WHERE City='Beijing'  # 选取居住在城市 "Beijing" 中的人。Beijing属于文本值
+	   点评：感觉特别方便。这里的Beijing仅仅是某一条数据中的某一个值。可见sql语句的强大
+	
+	7.4 AND 和 OR 运算符【用于基于一个以上的条件对记录进行过滤。】
+		AND 和 OR 可在 WHERE 子语句中把两个或多个条件结合起来。
+		如果第一个条件和第二个条件都成立，则 AND 运算符显示一条记录。
+		如果第一个条件和第二个条件中只要有一个成立，则 OR 运算符显示一条记录。
+		
+		语法格式1：
+		Eg1: 使用 AND 来显示所有姓为 "Carter" 并且名为 "Thomas" 的人：
+		    SELECT * FROM Persons WHERE FirstName='Thomas' AND LastName='Carter' 
+		    
+		Eg2:使用 OR 来显示所有姓为 "Carter" 或者名为 "Thomas" 的人：
+			SELECT * FROM Persons WHERE firstname='Thomas' OR lastname='Carter'
+		  
+		Eg3:把 AND 和 OR 结合起来（使用圆括号来组成复杂的表达式）
+		   SELECT * FROM Persons WHERE (FirstName='Thomas' OR FirstName='William') AND LastName='Carter'
+	
+	7.5 ORDER BY 【语句用于对结果集进行排序】
+		ORDER BY 语句用于根据指定的列对结果集进行排序。
+		ORDER BY 语句默认按照升序对记录进行排序。
+		如果您希望按照降序对记录进行排序，可以使用 DESC 关键字。
+		
+		Eg1:以字母顺序显示公司名称
+			SELECT Company, OrderNumber FROM Orders ORDER BY Company
+		Eg2:以字母顺序显示公司名称（Company），并以数字顺序显示顺序号（OrderNumber）
+			SELECT Company, OrderNumber FROM Orders ORDER BY Company, OrderNumber
+		Eg3:以逆字母顺序显示公司名称：
+		    SELECT Company, OrderNumber FROM Orders ORDER BY Company DESC
+			
+8、 INSERT INTO 语句【用于向表格中插入新的行】
+	    语法格式1：
+		  INSERT INTO 表名称 VALUES (值1, 值2,....)
+		语法格式2：（指定所要插入数据的列）
+			INSERT INTO table_name (列1, 列2,...) VALUES (值1, 值2,....)
+		
+		Eg1:插入新的行 (Persons是表名)
+			INSERT INTO Persons VALUES ('Gates', 'Bill', 'Xuanwumen 10', 'Beijing')
+		Eg2: 在指定的列中插入数据
+			INSERT INTO Persons (LastName, Address) VALUES ('Wilson', 'Champs-Elysees')
+
+9、 Update 语句【Update 语句用于修改表中的数据】
+9、 Update 语句【Update 语句用于修改表中的数据】
+		语法格式1：
+			UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
+			
+		Eg1:更新某一行中的一个列【我们为 lastname 是 "Wilson" 的人添加 firstname，缺失项】
+			UPDATE Person SET FirstName = 'Fred' WHERE LastName = 'Wilson' 
+			
+		Eg2:更新某一行中的若干列【我们会修改地址（address），并添加城市名称（city）】
+			UPDATE Person SET Address = 'Zhongshan 23', City = 'Nanjing' WHERE LastName = 'Wilson'
+
+10、DELETE 语句【DELETE 语句用于删除表中的行】
+		语法格式1：
+			DELETE FROM 表名称 WHERE 列名称 = 值
+		
+		Eg1:删除某行【"Fred Wilson" 会被删除】
+			DELETE FROM Person WHERE LastName = 'Wilson' 
+		Eg2:删除所有行【可以在不删除表的情况下删除所有的行。这意味着表的结构、属性和索引都是完整的】
+			格式：DELETE FROM table_name
+			或
+			格式：DELETE * FROM table_name
+			
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+								sql高级教程
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+11、SQL TOP子句 【TOP 子句用于规定要返回的记录的数目。
+                  对于拥有数千条记录的大型表来说，TOP 子句是非常有用的。】
+		注意：并非所有的数据库系统都支持 TOP 子句。【MariaDB貌似就支持】
+	11.1 SQL Server 的语法：
+		 SELECT TOP number|percent column_name(s)
+		 FROM table_name
+		
+	11.2 MySQL 语法
+		SELECT column_name(s)
+		FROM table_name
+		LIMIT number
+		
+		
+	11.3 Oracle 语法
+		SELECT column_name(s)
+		FROM table_name
+		WHERE ROWNUM <= number
+		
+	Eg: 我们希望从上面的 "Persons" 表中选取头两条记录
+	    SELECT TOP 2 * FROM Persons
+		
+	Eg2:我们希望从上面的 "Persons" 表中选取 50% 的记录。
+		SELECT TOP 50 PERCENT * FROM Persons
+
+		
+12、SQL LIKE 操作符【LIKE 操作符用于在 WHERE 子句中搜索列中的指定模式。】
+	12.1 语法格式1：SQL LIKE 操作符语法
+		SELECT column_name(s)
+		FROM table_name
+		WHERE column_name LIKE pattern
+		
+13、SQL FORMAT() 函数【FORMAT 函数用于对字段的显示进行格式化。】
+	13.1 SQL FORMAT() 语法
+	     SELECT FORMAT(column_name,format) FROM table_name
+		 
+		 参数描述：column_name 	必需。要格式化的字段。
+				   format 	必需。规定格式。
+		
+		Eg:我们希望显示每天日期所对应的名称和价格（日期的显示格式是 "YYYY-MM-DD"）。
+		   我们使用如下 SQL 语句:
+		   SELECT ProductName, UnitPrice, FORMAT(Now(),'YYYY-MM-DD') as PerDate
+			FROM Products

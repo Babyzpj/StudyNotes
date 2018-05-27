@@ -1,0 +1,12 @@
+对于我现在任务，通过跟向前交流：
+1、pipeline
+2、redis  多线程
+3、于前端交流，通过那种方式传输
+4、
+
+java学习：
+http://bbs.csdn.net/forums/Java
+http://blog.csdn.net/anlidengshiwei/article/details/42264301
+http://www.runoob.com/java/java-tutorial.html
+https://github.com/justjavac/free-programming-books-zh_CN#java
+http://justjavac.com/other/2012/05/15/qualified-programmer-should-read-what-books.html

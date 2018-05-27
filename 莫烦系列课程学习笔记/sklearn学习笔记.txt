@@ -1,0 +1,345 @@
+1、sklearn包含内容：
+	监督学习：Classification、Regression
+	
+	非监督学习：clusting
+	
+	dimensionality reduction: 降维
+
+2、sklearn通用学习模式
+	2.1 分类
+	   Eg: iris(可以用sklearn的数据来做联系)
+	   import numpy as np
+	   from sklearn import datasets
+	   from sklearn.cross_validation import train_test_spilt
+	   from sklearn.neighbors import KNeighborsClassifier
+	   
+	   iris = datasets.load_iris()
+	   iris_X = iris.data
+	   iris_y = target
+	   
+	   # 将元数据分割为训练集和测试集
+	    #并打乱元数据
+	   X_train,X_test,y_train,y_test = train_test_spilt(
+					iris_X,iris_y,test_size = 0.3)
+	   
+	   knn = KNeighborsClassifier()
+	   
+	   # 训练模型
+	   knn.fit(X_train,y_train)
+	   
+	   # 预测数据
+	   knn.predict(X_test)
+	   
+	   
+3、sklearn的数据库？	   
+	   Sklearn 中的data sets，很多而且有用，可以用来学习算法模型
+	   # http://scikit-learn.org/stable/modules/classes.html#module-sklearn.datasets
+	   #点进去相应数据的链接，可以看到数据的组成信息<属性、条数等等>
+	  
+	  另外:也可以用sklearn去生成数据
+	
+	3.1 boston 房价, 糖尿病, 数字, Iris 花  
+	   Eg:
+	   
+	   loaded_data = datasets.load_boston()
+	   data_X = loaded_data.data
+	   data_y = loaded_data.target
+	   
+	   # 默认值就已经很好了。如果不知道怎么改变参数用默认值就可以了
+	   model = LinearRegression()
+	   model.fit(data_X,data_y)
+	   
+	   model.predict(data_X[0:4,:)
+	    
+	注意：为了提高准确度，可以通过尝试不同的model，不同的参数，不同的预处理等方法，
+	      入门的话可以直接用默认值
+	
+	
+	3.2 创造数据
+		import matplotlib.pyplot as plt
+		
+		X, y = datasets.make_regression(n_samples=100, n_features=1, n_targets=1, noise=10)
+	   
+	    # 用scatter 的形式来输出结果。noise 越大的话，点就会越来越离散
+ 	    plt.scatter(X, y)
+		plt.show()
+	   
+4、sklearn 各model中常用属性与功能   
+	   
+	4.1  model.coef_ 和 model.intercept_ 属于 Model   
+            这两个属性分别输出模型的斜率和截距（与y轴的交点）。	
+	     model.coef_         #训练后x的参数值
+         model.intercept_     # 训练好后与y轴的焦点
+		 
+		from sklearn import datasets
+		from sklearn.linear_model import LinearRegression
+
+		loaded_data = datasets.load_boston()
+		data_X = loaded_data.data
+		data_y = loaded_data.target
+
+		model = LinearRegression()
+	    model.fit(data_X, data_y)
+	    
+	4.2  model.predict(X_test)
+    
+	4.3 get_params()它可以取出之前定义的参数
+	    model.get_params()  # 获得定义的参数	
+	 
+	4.4 model.score(X_test,y_test)  
+	    # 对 Model 用 R^2 的方式进行打分，输出精确度  coefficient of determination
+	     # 即预测正确的多少
+	
+5、标准化（Normalization）
+    由于资料的偏差与跨度会影响机器学习的成效，因此正规化(标准化)数据可以提升机器学习的成效
+	Normalization在sklearn中又叫scale
+	
+	5.1 from sklearn import preprocessing
+		import numpy as np
+			
+		#建立Array
+		a = np.array([[10, 2.7, 3.6],
+					  [-100, 5, -2],
+                      [120, 20, 40]], dtype=np.float64)
+		
+		#将normalized后的a打印出
+		print(preprocessing.scale(a))
+					  [[ 0.         -0.85170713 -0.55138018]
+					   [-1.22474487 -0.55187146 -0.852133  ]
+					   [ 1.22474487  1.40357859  1.40351318]]
+       
+	5.2 数据标准化对机器学习成效的影响
+        # 标准化数据模块
+		from sklearn import preprocessing 
+		import numpy as np
+
+		# 将资料分割成train与test的模块
+		from sklearn.model_selection import train_test_split
+
+		# 生成适合做classification资料的模块
+		from sklearn.datasets.samples_generator import make_classification 
+
+		# Support Vector Machine中的Support Vector Classifier
+		from sklearn.svm import SVC 
+
+		# 可视化数据的模块
+		import matplotlib.pyplot as plt 
+			
+	# 生成适合做Classification数据
+	
+	    #生成具有2种属性的300笔数据
+		X, y = make_classification(
+								n_samples=300, n_features=2,
+								n_redundant=0, n_informative=2, 
+								random_state=22, n_clusters_per_class=1, 
+								scale=100)
+            
+		#可视化数据
+	#	plt.scatter(X[:, 0], X[:, 1], c=y)
+	#	plt.show()
+		
+	将生成的数据标准化
+	   X = preprocessing.scale(X)  # 将数据压缩在一个较小的范围
+	 or 
+       X = preprocessing.minmax_scale(X,feature_range(-1,1))
+                #参数feature_range(-1,1)表示将X中的数据压缩至(-1,1)的范围
+				  # 默认范围是(0,1)
+	
+	   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+	   clf = SVC()
+	   clf.fit(X_train, y_train)
+	   print(clf.score(X_test, y_test))   # 测试经确定
+	     0.94
+	   
+	# 是否标准化的效果对比
+	   
+	   不用scale对数据进行标准化，得分为
+	     0.48
+		 
+	所以，标准化，对于机器学习的影响还是很大的。
+	
+6、交叉验证可以应用神经网络和其他机器学习的调参	
+    6.1 cross validation (交叉验证)
+	    有了他的帮助，我们能直观的看出不同 Model 或者参数对结构准确度的影响。
+       交叉验证分为三种：
+	        1. 简单交叉验证
+			   通过调整训练集在不同条件下(如：不同参数个数)训练模型，从而得到不同模型
+			   通过在测试集评价各个模型误差，选出误差最小的模型
+			   
+	        2. S折交叉验证
+			   随机将数据分成S个互不相交的大小相同的子集，然后利用S-1个自己的数据训练模型
+			   利用余下的一个作为测试?，将这一过程对可能的S中选择重复进行，最后选出S次评测中
+			   平均误差最小的模型
+			
+		    3. 留一交叉验证
+	           S折交叉验证的特殊情况，S=N，N是给定数据集的容量。
+			   往往在缺乏数据情况下使用
+	
+	6.2  举例 <S折交叉验证>
+	
+	 未使用交叉验证
+	    from sklearn.datasets import load_iris # iris数据集
+		from sklearn.model_selection import train_test_split # 分割数据模块
+		from sklearn.neighbors import KNeighborsClassifier # K最近邻(kNN，k-NearestNeighbor)分类算法
+
+		#加载iris数据集
+		iris = load_iris()
+		X = iris.data
+		y = iris.target
+
+		#分割数据并
+		X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=4)
+
+		#建立模型
+		knn = KNeighborsClassifier(n_neighbors=5)  # 周围5个点的情况
+              # n_neighbors的选择也可以进行集中测试（见夏利）
+		
+		#训练模型
+		knn.fit(X_train, y_train)
+
+		#将准确率打印出
+		print(knn.score(X_test, y_test))
+		# 0.973684210526
+	 
+	 使用交叉验证
+	 
+		from sklearn.cross_validation import cross_val_score # K折交叉验证模块
+		
+		#使用S折交叉验证模块
+		scores = cross_val_score(knn, X, y, cv=5, scoring='accuracy')
+		
+		#将5次的预测准确率打印出
+		print(scores)
+		# [ 0.96666667  1.          0.93333333  0.96666667  1.        ]
+
+		#将5次的预测准确平均率打印出
+		print(scores.mean()) 
+	 
+	 
+	集中选择n_neighbors=k的中选择
+	   import matplotlib.pyplot as plt #可视化模块
+
+		#建立测试参数集
+		k_range = range(1, 31)
+
+		k_scores = []
+
+		#藉由迭代的方式来计算不同参数对模型的影响，并返回交叉验证后的平均准确率
+		for k in k_range:
+			knn = KNeighborsClassifier(n_neighbors=k)
+			scores = cross_val_score(knn, X, y, cv=10, scoring='accuracy')
+			k_scores.append(scores.mean())
+
+		#可视化数据
+		plt.plot(k_range, k_scores)
+		plt.xlabel('Value of K for KNN')
+		plt.ylabel('Cross-Validated Accuracy')
+		plt.show()
+	 
+	 
+	如果是回归问题，需要交叉验证时，改为损失函数就可以了
+	    loss = -cross_val_score(knn,X,y,cv=10,scoring='mean_squared_error')
+	 
+	注意：以上在评价时，只需要换一下用到的model就可以了
+	
+
+	6.3 over_fitting <过拟合>
+	    sklearn.learning_curve 中的 learning curve 可以很直观的看出我们的 model 学习的进度, 对比发现有没有 overfitting 的问题. 然后我们可以对我们的 model 进行调整, 克服 overfitting 的问题.
+		
+	   eg:
+	    from sklearn.learning_curve import learning_curve #学习曲线模块
+		from sklearn.datasets import load_digits #digits数据集
+		from sklearn.svm import SVC #Support Vector Classifier
+		import matplotlib.pyplot as plt #可视化模块
+		import numpy as np
+		
+		# 观察样本由小到大的学习曲线变化, 采用K折交叉验证 cv=10, 选择平均方差检视模型效能 
+		 # 样本由小到大分成5轮检视学习曲线(10%, 25%, 50%, 75%, 100%)
+		train_sizes, train_loss, test_loss = learning_curve(
+		SVC(gamma=0.001), X, y, cv=10, scoring='mean_squared_error',
+		train_sizes=[0.1, 0.25, 0.5, 0.75, 1])
+
+		#平均每一轮所得到的平均方差(共5轮，分别为样本10%、25%、50%、75%、100%)
+		train_loss_mean = -np.mean(train_loss, axis=1)
+		test_loss_mean = -np.mean(test_loss, axis=1)
+		
+		# 可视化图形:
+		plt.plot(train_sizes, train_loss_mean, 'o-', color="r",
+         label="Training")
+		plt.plot(train_sizes, test_loss_mean, 'o-', color="g",
+				label="Cross-validation")
+
+		plt.xlabel("Training examples")
+		plt.ylabel("Loss")
+		plt.legend(loc="best")
+		plt.show()
+		
+	6.3 如何调整使模型不过拟合  （如何更好的选择model中某个参数的值，并且不过拟合）
+	    validation_curve
+		用这一种曲线我们就能更加直观看出改变模型中的参数的时候有没有过拟合(overfitting)的问题了. 这也是可以让我们更好的选择参数的方法.
+		
+		from sklearn.learning_curve import validation_curve #validation_curve模块
+		from sklearn.datasets import load_digits 
+		from sklearn.svm import SVC 
+		import matplotlib.pyplot as plt 
+		import numpy as np
+
+		#digits数据集
+		digits = load_digits()
+		X = digits.data
+		y = digits.target
+
+		#建立参数测试集
+		param_range = np.logspace(-6, -2.3, 5)
+
+		#使用validation_curve快速找出参数对模型的影响
+		train_loss, test_loss = validation_curve(
+			SVC(), X, y, param_name='gamma', param_range=param_range, cv=10, scoring='mean_squared_error')
+
+		#平均每一轮的平均方差
+		train_loss_mean = -np.mean(train_loss, axis=1)
+		test_loss_mean = -np.mean(test_loss, axis=1)
+
+		#可视化图形
+		plt.plot(param_range, train_loss_mean, 'o-', color="r",
+				 label="Training")
+		plt.plot(param_range, test_loss_mean, 'o-', color="g",
+				label="Cross-validation")
+
+		plt.xlabel("gamma")
+		plt.ylabel("Loss")
+		plt.legend(loc="best")
+		plt.show()
+		
+7、保存模型model
+	   使用 pickle 保存(python自带的)
+	   使用 joblib 保存
+	   
+	    from sklearn import svm
+	    from sklearn import datasets
+	   
+	    clf = svm.SVC()
+		iris = datasets.load_iris()
+		X, y = iris.data, iris.target
+		clf.fit(X,y)
+		
+	7.1 使用python自带模块存储和读取运行好model	
+	    # 用pickle保存
+		import pickle
+		with open('./clf.pickle','wb') as f:
+			pickle.dump(clf,f)
+		
+		# 读取模型
+		with open('./clf.pickle','rb') as f:
+			clf2 = pickle.load(clf,f)
+			print clf2.predict(X[0:1])
+			
+	7.2 sklearn的模块存储和读取运行好model
+		from sklearn.externals import joblib
+		# 保存
+		joblib.dump(clf,'./clf.pkl')
+		#读取
+		clf3 = joblib.load(./clf.pkl)
+		
+	#在处理多数据时， joblib比pickle更快
+		

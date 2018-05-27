@@ -1,0 +1,23 @@
+1、实验条:1：
+     从user_bhv_d_feature_(4).csv任取30w数据作为训练集
+	 从user_bhv_d_feature_7_days.csv人物5w数据作为测试集
+	 
+   训练模型：随机森林
+   
+   实验结果：
+        精准率：0.6200
+		召回率：0.619884
+		F1值：0.619630097557
+	
+改进思路：<推测数据可能不平衡导致，于是将各个id最多取5条记录，作为训练集和测试集>
+将user_bhv_d_feature_(4).csv各个device_id最多取5条记录，然后生成文件eguan_sex_traindata_5_21+w.csv
+将user_bhv_d_feature_7_days.csv各个device_id最多取5条记录，然后生成文件eguan_sex_traindata_5_38+w.csv
+	 
+2、 实验条件2：<平衡数据平衡性>	
+      取出eguan_sex_traindata_5_38+w.csv前30w数据为训练集
+	  取出eguan_sex_traindata_5_38+w.csv后5w数据为测试集
+	  
+	训练模型：随机森林
+	
+	实验结果：
+	    

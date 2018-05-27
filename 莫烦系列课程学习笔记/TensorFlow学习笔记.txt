@@ -1,0 +1,368 @@
+1、什么是tensorflow？
+	Google的关于第三方神经网络包。
+2、为甚么要学习TensorFlow？
+	可以借助TensorFlow很自如的玩转深度学习
+	
+3、TensorFlow安装
+	3.1 安装
+		MacOS, Linux, Windows 系统均已支持 Tensorflow
+		确定你的 python 版本
+		你的 GPU 是 NVIDIA, 就可以安装 GPU 版本的 Tensorflow; 你的 GPU 不是 NVIDIA 也没有关系, 安装 CPU 版本的就好了.
+	
+	3.2 安装方式
+		Pip 安装
+		Virtualenv 安装
+		Anaconda 安装
+		Docker 安装
+		从安装源 安装
+	
+	3.3  安装命令
+		# Ubuntu/Linux 64-位 系统的执行代码:
+		$ sudo apt-get install python-pip python-dev
+		 
+		激动人心的时刻到了, Tensorflow (0.12) 刚刚做了更新, 绕过了复杂的安装步骤, 
+		如果你只需要安装 CPU 版本的 Tensorflow, 运行下面这个就好了:
+			# python 2+ 的用户:
+			$ pip install tensorflow
+
+			# python 3+ 的用户:
+			$ pip3 install tensorflow
+			
+			
+4、	TensorFlow是做什么的？
+	X:输入的一串数字
+	y:函数
+	
+	机器学习就是模拟出这串数字的曲线
+	
+5、TensorFlow基础教程
+	
+	5.1、处理结构（Tensorflow处理数据的结构  非常重要）
+		步1：Tensorflow 首先要定义神经网络的结构, 然后再把数据放入结构当中去运算和 training.
+			
+			TensorFlow是面向定义的编程方式，即先定义好变量、结构，然后在进行运算。
+			TensorFlow中文含义：向量在这个结构里飞
+		
+		解释：
+		   TensorFlow是采用数据流图（data　flow　graphs）来计算,
+		   所以首先我们得创建一个数据流流图,  然后再将我们的数据（数据以张量(tensor)的形式存在）放在数据流图中计算. 节点（Nodes）在图中表示数学操作,图中的线（edges）则表示在节点间相互联系的多维数据数组, 即张量（tensor). 训练模型时tensor会不断的从数据流图中的一个节点flow到另一节点, 这就是TensorFlow名字的由来.
+		   
+		张量（Tensor):
+			张量有多种. 零阶张量为 纯量或标量 (scalar) 也就是一个数值. 比如 [1]
+			一阶张量为 向量 (vector), 比如 一维的 [1, 2, 3]
+			二阶张量为 矩阵 (matrix), 比如 二维的 [[1, 2, 3],[4, 5, 6],[7, 8, 9]]
+			以此类推, 还有 三阶 三维的 …
+	
+	可以将神经网络想象成一个大的图，先将图的结构都做好，做好结构后，初始化结构让结构活动起。
+	
+	
+	5.2 用代码创建TensorFlow结构
+	Eg：预测线性直线 
+		
+		输入：训练数据
+		输出：每一次训练后参数是多少
+	
+		import tensorflow as tf100
+		import numpy np
+		
+		# create data
+		x_data = np.random.rand(100).astype(np.float32)  # TensorFlow处理数据大部分为float32
+		y_data = x_data*0.1 + 0.3
+		   #可以把 y_data = x_data*0.1 + 0.3 想象成 y=Weights * x + biases,     然后神经网络也就是学着把 Weights 变成 0.1, biases 变成 0.3.
+		
+		### 创建TensorFlow结构###
+		 #搭建模型
+		Weights = tf.Variable(tf.random_uniform([1],-1.0,1.0))  # 随机生成参数
+		   # w是一维的结构，故为[1]，初始值为在[-1,1]之间的随机数
+		biases = tf.Variable(tf.zeros([1])) # 初始值为0
+		y = Weights*x_data +biases         # 预测值
+		
+		# 计算误差：即y 和 y_data 的误差:
+		loss = tf.reduce_mean(tf.square(y-y_data)  # 平均损失函数
+		
+		 #反向传递误差的工作就教给optimizer了, 我们使用的误差传递方法是梯度下降法:
+		optimizer = tf.train.GradientDescentOptimizer(0.5)  # 优化器，较少预测误差
+		    # 神经网络要做的事儿，就是优化损失函数，提升准确度
+			# 学习效率是个小于1的数，这儿我们设为.05
+			# 选择梯度下降法进行训练
+		train = optimizer.minimize(loss)  # 最小化误差函数
+		
+		# 训练前的初始化，初始化神经网络结构
+		init = tf.initialize_all_variable()
+		
+		### 创建TensorFlow结构###
+		
+		
+		#初始化前，定义sess，然后用run()处理要处理的地方
+		sess = tf.Session()
+		# 初始化喽，非常重要
+		sess.run(init)        
+		
+		#训练神经网络，训练201步
+		for step in range(201):
+			sess.run(train)
+			if step % 20 ==0:  # 每隔20步，打印下训练结果
+				print step，sess.run(Weights),sess.run(biases)
+			
+	
+	
+6、Session对话机制
+	6.1 打开方式1
+		import tensorfflow as tf
+		
+		sess = tf.Session()
+		sess.run(***)  # 代表要运行的程序
+		
+	6.2 打开方式2
+		import tensorflow as tf  
+		with tf.Session() as sess:  # 运行完自动关闭回话
+			sess.run(***)
+	
+7、	定义变量Variable
+	7.1 先声明变量，也可以直接给该变量赋值
+		import tensorfflow as tf
+		state = tf.Variable(0，name='counter')
+		print state.counter
+		
+	   # 声明常量
+		one = tf.constant(1)
+		
+		#相加变量
+		new_value= tf.add(state,one)
+		update = tf.assign(state,new_value)
+		
+		# 初始化所有变量，如果定义这些变量，一定要用这个东西***
+		init = tf.initialize_all_variable()
+			
+		with tf.Session() as sess:
+			sess.run(init)              # 然后激活这些变量****
+			for _ in range(3):
+				sess.run(update)
+				print sess.run(state)
+	
+	总结：
+		1、如果程序中定义了Variable，后面一定记得初始化。
+			init = tf.initialize_all_variable()
+		2、初始变量后，一定要激活这些变量
+			sess = tf.Session()
+			sess.run(init)
+	
+	
+8、Placeholder 传入值【 placeholder 是 Tensorflow 中的占位符，暂时储存变量.】
+	使用场景：Tensorflow 如果想要从外部传入data, 那就需要用到 tf.placeholder(), 
+		      以这种形式传输数据 sess.run(***, feed_dict={input: **}).
+	8.1 例子
+		import tensorflow as tf
+		
+		#在 Tensorflow 中需要定义 placeholder 的 type ，一般为 float32 形式
+		input1 = tf.placeholder(tf.float32)  # 要给定其数据形式，也可以后面确定行传
+		input2 = tf.placeholder(tf.float32)
+		
+		# mul = multiply 是将input1和input2 做乘法运算，并输出为 output
+		output = tf.mul(input1,input2)        # mul(),乘法运算
+		
+		with tf.Session() as sess:
+			print  sess.run(output,feed_dict={input1:[7.],input2:[2.]})
+			 传值的工作交给了 sess.run() , 需要传入的值放在了feed_dict={} 
+			 并一一对应。每一个 input. placeholder 与 feed_dict={} 是绑定在一起出现的。
+			 
+		注意：如果用placeholder的话，就以为这sess.run()结果时，给出输入值
+		
+9、为什么需要使用激励函数？
+	1、解决现实问题中线性方程不能解决的非线性任务
+	
+	2、线性函数：  y = Wx
+	   非线性方程： y = AF(Wx)
+	   
+	3、为什么加入激活函数？
+	  3.1、 激励函数AF必须是可微的，因为在 backpropagation 误差反向传递的时候, 只有这些可微分的激励函数才能把误差传递回去.
+	  3.2 激活函数是用来加入非线性因素的，因为线性模型的表达能力不够
+	   AF的有relu、sigmoid、softmax、tanh
+	  
+     数据线性可分：意思是可以用一条直线将数据分开。
+     数据线性不可分：意思是不可以用一条直线将数据分开。
+	  
+	4、场景————>激励函数
+	    CNN中推荐Relu
+		RNN中推荐使用 rule 或 tanh
+		
+10、添加层 def add_layer()
+	隐藏层layer包含参数<weights、biases、acitivation>
+	
+	 import tensorfflow as tf
+	 
+	 # 添加一个神经层的函数
+	 def add_layer(inputs,in_size,out_size,acitivation_function=None):
+		Weights = tf.Variable(tf.random_normal([in_size,out_size])  
+		   # 初始权重为随机变量要比全为0要好很多
+		biases = tf.Variable(tf.zeros([1,out_size])+0.1)
+		   #在机器学习中，biases的推荐值不为0，所以我们这里是在0向量的基础上又加了0.1
+		   
+		W_plus_b = tf.matmul(inputs,weights) + biases   # output=x*W+biases
+		#定义Wx_plus_b, 即神经网络未激活的值，tf.matmul()是矩阵的乘法。
+		
+		if acitivation_function is None:
+			outputs = W_plus_b
+			# 没有激活函数情况
+		else：
+			outputs = acitivation_function(W_plus_b)
+			# 否则将将合并后的数据传给激活函数
+		return outputs
+	注意：在tensorflow新版本中，该函数由一行即可实现tf.layers.dense()
+	
+11、adder功能：导入数据————>搭建网络—————>训练数据
+	  import pandas as pd 
+	  import numpy as np 
+	
+	11.1 导入数据（构建数据） 
+		#构建并不是严格的一元二次函数的关系
+      x_data = np.linspace(-1,1,300, dtype=np.float32)[:, np.newaxis]
+	  noise = np.random.normal(0, 0.05, x_data.shape).astype(np.float32)
+	  y_data = np.square(x_data) - 0.5 + noise	
+	  
+		   #利用占位符定义我们所需的神经网络的输入
+		   #tf.placeholder()就是代表占位符，这里的None代表无论输入有多少都可以，
+			#因为输入只有一个特征，所以这里是1
+	   xs = tf.placeholder(tf.float32,[None,1])
+	   ys = tf.placeholder(tf.float32,[None,1])
+	11.2 搭建网络
+	     #开始定义神经层,通常神经层都包括输入层、隐藏层和输出层.
+		 #这里的输入层只有一个属性，所以我们就只有一个输入 #隐藏层我们可以自己假设，这里我们假设隐藏层有10个神经元；    输出层和输入层的结构是一样的，所以我们的输出层也是只有一层 
+		 
+		# 所以，我们构建的是——输入层1个、隐藏层10个、输出层1个的神经网络。
+		
+	    # 利用之前的add_layer()函数,开始定义隐藏层.这里使用 Tensorflow 自带的激励函数tf.nn.relu。
+		  l1 = add_layer(xs,1,10,acitivation_function=tf.nn.relu)
+		    #这里10代表隐藏层有十个隐藏元 
+	    #定义输出层
+		  prediction = add_layer(l1,10,1,acitivation_function=None)
+		     # 这是隐藏层就是输入了，所以input_size=10
+		  
+		# 计算预测值prediction和真实值的误差，对二者的平方求和再取平均
+		  loss = tf.reduce_mean(tf.reduce_sum(tf.square(ys - prediction),reduction_indices=[1])
+		   
+		# 关键一步，如何让机器学习提升它的准确率。
+		   # tf.train.GradientDescentOptimizer()中的值通常都小于，代表以0.1的效率来最小化误差loss
+		  train_step = tf.train.GradientDescentOptimizer(0.1).minimize(loss)
+		  
+		# 初始化变量
+		  init = tf.global_variables_initializer()
+		  
+		# 定义Session，并用Session来执行init初始化步骤，
+		   #注意：在tensorflow中，只有session.run()才会执行我们定义的运算
+		  sess = tf.Session()
+		  sess.run(init)
+		  
+	11.3 训练
+	     # 让机器学习1000次。
+		  # 机器学习的内容是train_step,用Session来run每一次 training 的数据，
+		    逐步提升神经网络的预测准确性。
+          #(注意：当运算要用到placeholder时，就需要feed_dict这个字典来指定输入
+		
+		for i in range(1000):
+			#training
+			sess.run(train_step,feed_dict={xs:x_data,ys:y_data})
+			
+			#每50步我们输出一下机器学习的误差
+			if i%50 == 0:
+				print sess.run(loss,feed_dict={xs:x_data,ys:y_data})
+		
+		
+12、tensorflow中的reduction_indices参数
+    在tensorflow的使用中，经常会使用tf.reduce_mean,tf.reduce_sum等函数，在函数中，有一个
+     reduction_indices参数，表示函数的处理维度，直接上图，一目了然
+     <http://www.cnblogs.com/likethanlove/p/6547405.html>	
+		
+		
+13、TensorFlow解决Classification分类问题
+    13.1 MNIST 数据库
+       输入：每个输入是一个28*28=784数字的矩阵，784就是神经网络输入X的input_size
+	   输出：根据位置不同表示数据的分类，eg:[0,1,0,...,0]表示大小为2（长度为n，这 个是可以确定的） 即y的是进行one-hot编码后的值
+	   （对数值进行one-hot编码：
+	     from sklearn.preprocesing import labelBinarizer
+	     y=labelBinarizer().fit_transform(y)）
+	   
+	  数据中包含55000张训练图片，每张图片的分辨率是28×28，所以我们的训练网络输入应该是28×28=784个
+	  像素数据。
+	  
+	  from tensorflow.examples.tutorials.mnist import input_data
+	  mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
+	  
+	13.2 搭建网络	
+		xs = tf.placeholder(tf.float32, [None, 784]) # 28x28
+		ys = tf.placeholder(tf.float32, [None, 10])
+		prediction = add_layer(xs, 784, 10, activation_function=tf.nn.softmax)
+		
+	13.3 损失函数，Cross entropy （即最优化目标函数）选用交叉熵函数
+	    交叉熵用来衡量预测值和真实值的概率分布的相似程度，如果完全相同，它们的交叉熵等于零
+	    
+		cross_entropy = tf.reduce_mean(-tf.reduce_sum(ys*tf.log(prediction),
+							reduction_indices=[1])) #loss
+							
+	13.4 最优化算法采用梯度下降法。
+	     train_step = tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
+		 sess = tf.Session()
+		 sess.run(tf.global_variables_initializer())
+		 
+	13.5 训练
+		  if i % 50 ==0:
+		      print compute_accuracy(mnist.test.images,mnist.test.labels)
+			  
+		# 定义compute_accuracy函数 （计算正确率）
+		 def compute_accuracy(v_xs,v_ys):
+			global prediction
+			y_pre = sess.run(prediction,feed_dict={xs:x_data})
+			correct_prediction = tf.equal(tf.argmax(y_pre,1),tf.argmax(v_ys,))
+			accuracy = tf.reduce_mean(tf.cast(correct_prediction,tf.float32))
+			result = sess.run(accuracy,feed_dict={xs:x_data,ys:y_data})
+			return result
+14. 过拟合和解决过拟合的方法 （深度学习）
+	14.1 什么叫过拟合？
+		训练集上表现优秀，测试集上表现欠佳；换通俗的话说，已见过的题目会解答，未见过的题目解不开。
+		
+	14.2 过拟合原因
+		 1 训练集和测试机特征分布不一致
+	     2 模型太过复杂，而样本量不足
+		 
+	14.3 过拟合解决办法
+	    法一: 增加数据量,
+	       大部分过拟合产生的原因是因为数据量太少了. 如果我们有成千上万的数据, 红线也会慢慢被拉直, 变得没那么扭曲 
+	    
+		法二：运用正规化. L1, l2 regularization等等
+		    这些方法适用于大多数的机器学习, 包括神经网络. 他们的做法大同小异, 
+			
+15、l1和l2的区别 （机器学习）
+     我们简化机器学习的关键公式为 y=Wx . W为机器需要学习到的各种参数. 在过拟合中, W 往往变化率比较大. 为了不让W一次性变化太大, 我们在计算误差上做些手脚. 原始的 cost 误差是这样计算 , cost = 预测值-真实值的平方. 如果W变得太大, 我们就让cost也跟着变大, 变成一种惩罚机制. 所以我们把 W 自己考虑进来 . 这里 abs 是绝对值. 这一种形式的 正规化, 叫做 l1 正规化. 
+	 
+     L2正规化和L1类似,只是绝对值换成了平方. 其他的L3、L4 也都是换成了立方和4次方等等.
+	 L1、L2会乘法大的W参数，使之不会太大。
+	 
+16. dropout正则化：(神经网络)
+	16.1 在神经网络中，每一次训练我们都随机忽略神经网络中一些神经元和神经连接，使得神经网络
+	     变得不完整。这样每一次训练预测结果都不会依赖某一部分特定的神经元，
+	   
+	16.2 TensorFlow提供了强大的dropout方法来解决overfitting问题   
+         tf.nn.dropout()
+    
+17 卷积神经网络 CNN <结构与应用>
+   最常用：图片、视频、NLP
+   
+   17.1 CNN如何运作
+	  
+   17.2 卷积 
+       卷积，加强信息的连续性   
+	   
+   17.3 与传统的神经网络有那些不同？
+       1、权值共享
+	   2、卷积层和pooling层可以进行特征提取
+	   
+18、RNN 
+    18.1 作用
+	   主要是为了处理序列化数据
+	   
+	18.2 与普通的神经网络有什么不同？
+	    普通的神经网络结构并不能让 NN 了解这些数据之间的关联.而RNN具有这样的能力
+		
+		
+    18.3 
+	
